@@ -17,9 +17,7 @@ main = quickHttpServe site
 site :: Snap ()
 site =
     ifTop (writeBS "hello world") <|>
-    route [ ("foo", writeBS "bar")
-          , ("downloadDecks", downloadHandler)
-          ] <|>
+    route [ ("downloadDecks", downloadHandler) ] <|>
     dir "static" (serveDirectory ".")
 
 downloader :: Snap BS.ByteString
