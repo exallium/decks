@@ -5,10 +5,11 @@ import           Control.Applicative
 import           Snap.Core
 import           Snap.Util.FileServe
 import           Snap.Http.Server
-import           Network.HTTP.Client
 import           Control.Monad.Trans (liftIO)
-import           Data.ByteString.Lazy as LBS
-import qualified System.IO.Streams as Streams
+import           Data.ByteString as BS
+import           Data.ByteString.Char8 as Char8
+import           Text.XML.HXT.Core
+import           Text.HandsomeSoup
 
 main :: IO ()
 main = quickHttpServe site
@@ -21,13 +22,12 @@ site =
           ] <|>
     dir "static" (serveDirectory ".")
 
-downloader :: Snap LBS.ByteString
+downloader :: Snap BS.ByteString
 downloader = liftIO $ do
-    manager <- newManager defaultManagerSettings
-    request <- parseUrl "http://www.mtgtop8.com/search"
-    response <- httpLbs request manager
-    return $ responseBody response
+    let doc = fromUrl "http://www.mtgtop8.com/search"
+    links <- runX $ doc >>> css "td.S11 a" ! "href"
+    return $ BS.concat [Char8.pack $ "www.mtgtop8.com/" ++ x ++ "\n" | x <- links]
 
 downloadHandler :: Snap ()
 downloadHandler = do
-    downloader >>= writeLBS
+    downloader >>= writeBS

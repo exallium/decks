@@ -24,7 +24,8 @@ Executable decks
     http-streams              >= 0.8   && < 0.9,
     http-client               >= 0.4   && < 0.5,
     io-streams                >= 1.3.5 && < 1.3.6,
-    tagsoup                   >= 0.13  && < 0.14
+    HandsomeSoup              >= 0.4.2 && < 0.5,
+    hxt                       >= 9.3.1 && < 9.3.2
 
   if impl(ghc >= 6.12.0)
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
